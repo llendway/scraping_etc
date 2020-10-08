@@ -113,7 +113,20 @@ When reading in data from a file I created, I will often use the Import Wizard t
 
 * [readr documentation](https://readr.tidyverse.org/) and data import cheatsheet
 
+### Your Turn!
+
+#### Exercise 1
+
+Read in the fake garden harvest data. Find the data [here](https://github.com/llendway/scraping_etc/blob/main/2020_harvest.csv) and click on the `Raw` button to get a direct link to the data. 
+
+
+#### Exercise 2
+
+Read in this [data](https://www.kaggle.com/heeraldedhia/groceries-dataset) from the kaggle website. You will need to download the data first. Do some quick checks of the data to assure it has been read in appropriately.
+
 ## Scraping Data
+
+This section COMING SOON!
 
 ## Creating nice tables  
 
