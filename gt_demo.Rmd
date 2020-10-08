@@ -1,0 +1,288 @@
+---
+title: "`gt` demo"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    df_print: paged
+    code_download: true
+---
+
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE, 
+                      message = FALSE, 
+                      warning = FALSE)
+```
+
+```{r libraries}
+library(tidyverse)     # for data cleaning and plotting
+library(googlesheets4) # for reading googlesheet data
+library(lubridate)     # for date manipulation
+library(openintro)     # for the abbr2state() function
+library(palmerpenguins)# for Palmer penguin data
+library(maps)          # for map data
+library(ggmap)         # for mapping points on maps
+library(gplots)        # for col2hex() function
+library(RColorBrewer)  # for color palettes
+library(sf)            # for working with spatial data
+library(leaflet)       # for highly customizable mapping
+library(ggthemes)      # for more themes (including theme_map())
+library(plotly)        # for the ggplotly() - basic interactivity
+library(gganimate)     # for adding animation layers to ggplots
+library(gifski)        # for creating the gif (don't need to load this library every time,but need it installed)
+library(transformr)    # for "tweening" (gganimate)
+library(shiny)         # for creating interactive apps
+library(patchwork)     # for nicely combining ggplot2 graphs  
+library(gt)            # for creating nice tables
+library(scales)        # for changing scales
+library(paletteer)     # for color pallettes
+library(knitr)         # for the kable() function for creating nice tables
+library(rvest)         # for scraping data
+library(robotstxt)     # for checking if you can scrape data
+gs4_deauth()           # To not have to authorize each time you knit.
+theme_set(theme_minimal())
+```
+
+## From Rich Iannone
+
+From [Introducing the gt package](https://www.youtube.com/watch?v=h1KAjSfSbmk) by Rich Iannone
+
+View the example tibble:
+
+```{r}
+exibble %>% 
+  gt()
+```
+
+Create a stub and include row groups using `row` and `group` columns.
+
+```{r}
+tab <- 
+  exibble %>% 
+  gt(
+    rowname_col = "row",
+    groupname_col = "group"
+  )
+
+tab
+```
+
+Format the `num` column with gt's scientific notation:
+
+```{r}
+tab_2 <-
+  tab %>% 
+  fmt_scientific(
+    columns = vars(num),
+    decimals = 3
+  )
+
+tab_2
+```
+
+Format the dates in `date` (but only those that satisfy a condition) with `date_style`. (I changed this code to use `str_detect()` from `stringr` rather than `grepl()` from base R). The code `str_detect(char, "^[a-d]")` returns `TRUE` if the word in the `char` column starts with (`^`) a, b, c, or d (`a-d`). So, only those rows have the date formatting applied.
+
+```{r}
+tab_3 <- 
+  tab_2 %>% 
+  fmt_date(
+    columns = vars(date),
+    rows = str_detect(char, "^[a-d]"),
+    date_style = 6
+  )
+
+tab_3
+```
+
+Get info on `date_style` and the table output is a `gt` table! How cool.
+
+```{r}
+info_date_style()
+```
+
+Other info tables. (Lisa's side note - wow, these tables are so cool! I wish more R package documentation had something like this.)
+
+```{r}
+info_currencies()
+info_time_style()
+info_paletteer()
+```
+
+Hide columns. 
+
+```{r}
+tab_4 <- 
+  tab_3 %>% 
+  cols_hide(columns = vars(char, fctr, time, datetime))
+
+tab_4
+```
+
+They are still usable even though they are hidden. Below I use the `char` to only convert some of the rows.
+
+```{r}
+tab_4 %>% 
+  fmt_currency(columns = vars(currency), 
+               rows = str_detect(char, "^[a-d]"),
+               currency = "USD")
+```
+
+Format currency to pounds
+
+```{r}
+tab_5 <- 
+  tab_4 %>% 
+  fmt_currency(
+    columns = vars(currency),
+    currency = "GBP"
+  )
+
+tab_5
+```
+
+Add footnotes to some of the `currency` values. Many functions, like `cells_data()`, to help find the right cells. They all start with `cells_`.
+
+```{r}
+tab_6 <-
+  tab_5 %>% 
+  tab_footnote(
+    footnote = "These are lower prices.",
+    locations = cells_data(
+      columns = vars(currency),
+      rows = currency < 20
+    )
+  )
+
+tab_6
+```
+
+Add a footnote to the `currency` column label. Notice it changes the order of the footnotes. Footnotes will be numbered from left to right and top to bottom in the table. It does it for you! You don't need to remember to do anything in the right order.
+
+```{r}
+tab_7 <-
+  tab_6 %>% 
+  tab_footnote(
+    footnote = "All values are in GBP.",
+    locations = cells_column_labels(columns = vars(currency))
+  )
+
+tab_7
+```
+
+Add a header to the table with a title and subtitle. You can use markdown by enclosing it in `md()`.
+
+```{r}
+tab_8 <-
+  tab_7 %>% 
+  tab_header(
+    title = "An Exibble Example",
+    subtitle = md("Uses the `exibble` dataset from **gt**")
+  )
+
+tab_8
+```
+
+Change footnotes to be lettered instead of numbered using `tab_options()` (NOTE: the function has changed since his talk). Rich Iannone says `tab_options()` has "a million arguments." So, a lot of customization available. 
+
+```{r}
+tab_9 <- 
+  tab_8 %>% 
+  tab_options(footnotes.marks = letters)
+
+tab_9
+```
+
+
+Color the stub cells in blue using `column_labels.background.color()` (I did a different color than in the talk.) Notice it automatically makes the text white there so it is more readable.
+
+```{r}
+tab_10 <-
+  tab_9 %>% 
+  tab_options(column_labels.background.color = "darkred")
+
+tab_10
+```
+
+
+I skipped the part about an email and added a few things.
+
+We could put all of these steps together, just like we usually pipe things together:
+
+```{r}
+tab_final <-
+  exibble %>% 
+  gt(
+    rowname_col = "row",
+    groupname_col = "group"
+  ) %>% 
+  fmt_scientific(
+    columns = vars(num),
+    decimals = 3
+  ) %>% 
+  fmt_date(
+    columns = vars(date),
+    rows = str_detect(char, "^[a-d]"),
+    date_style = 6
+  ) %>% 
+  cols_hide(columns = vars(char, fctr, time, datetime)) %>% 
+  fmt_currency(
+    columns = vars(currency),
+    currency = "GBP"
+  ) %>% 
+  tab_footnote(
+    footnote = "These are lower prices.",
+    locations = cells_data(
+      columns = vars(currency),
+      rows = currency < 20
+    )
+  ) %>% 
+  tab_footnote(
+    footnote = "All values are in GBP.",
+    locations = cells_column_labels(columns = vars(currency))
+  ) %>% 
+  tab_header(
+    title = "An Exibble Example",
+    subtitle = md("Uses the `exibble` dataset from **gt**")
+  ) %>% 
+  tab_options(footnotes.marks = letters) %>% 
+  tab_options(column_labels.background.color = "darkred")
+
+tab_final
+```
+
+## Lisa's additions
+
+Add a summary row for each group that computes the average currency and total currency.
+
+```{r}
+tab_final %>% 
+  summary_rows(columns = vars(currency),
+               groups = TRUE,
+               fns = list(avg = ~mean(., na.rm = TRUE),
+                          sum = ~sum(.,na.rm = TRUE)),
+               formatter = fmt_currency,
+               currency = "GBP")
+```
+
+Notice if I don't get rid of missing values, both these summary statistics are missing for group b.
+
+```{r}
+tab_final %>% 
+  summary_rows(columns = vars(currency),
+               groups = TRUE,
+               fns = list(avg = "mean",
+                          sum = "sum"),
+               formatter = fmt_currency,
+               currency = "GBP")
+```
+
+Change background color of cells by value of a variable
+
+```{r}
+tab_final %>% 
+  data_color(columns = vars(num),
+             colors =  scales::col_numeric(palette = "viridis", 
+                                           domain = NULL),
+             alpha = .7)
+```
+

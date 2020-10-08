@@ -70,15 +70,42 @@ After this tutorial, you should be able to do the following:
 
 * Use `rvest()` functions to scrape data from a simple webpage and recognize when scraping the data will require more advanced tools.
 
-* Create nice tables with the `knitr` `kable()` functions and the `gt` functions. 
+* Create nice tables with the `gt` functions. 
 
 * Use `patchwork` to display related plots together nicely.
 
 ## Importing Data
 
+In this section, we'll learn some of the common ways we can import data into R. Many of these functions you have already used and others you may not ever need to use. So, this will be a pretty quick overview.
+
 ### Common Import functions
 
+The table below lists some common import functions and when you would use them.
+
+Function | Use when
+-----------|---------------
+`read_csv()`| data are saved in .csv (comma delimited) format - you can save Excel files and Google Sheets in this format 
+`read_delim()` | data are saved in other delimited formats (tab, |, space, etc.)  
+`read_sheet()` | data are in a Google Sheet  
+`st_read()` | reading in a shapefile
+
+After reading in new data, it is ALWAYS a good idea to do some quick checks of the data. Here are some things I always do:
+
+1. Open the data in the spreadsheet-like viewer and take a look at it. Sort it by different variables by clicking on the arrows next to the variable name. Make sure there isn't anything unexpected.
+
+2. Do a quick summary of the data. The code below is one of the things I almost always do because it's quick. For quantitative variables, it tells me some summary statistics and will let me know if there are missing values. For factors (they need to be factors, not just character variables - the `mutate()` changes them to factors), it shows you counts for the top categories and tells you if there are any missing values. 
+
+```{r}
+garden_harvest %>% 
+  mutate(across(where(is.character), as.factor)) %>% 
+  summary()
+```
+
+3. After that, I usually do some quick summaries (counts, sums, etc.) of some of the main variables I am interested in. 
+
 ### Using the Import Dataset Wizard
+
+When reading in data from a file I created, I will often use the Import Wizard to help me write the code. DO NOT use it to import the data as you will need the code to read in the data in order to knit your document. Watch the quick video below of how I use it. 
 
 ### Resources
 
@@ -87,5 +114,58 @@ After this tutorial, you should be able to do the following:
 * [readr documentation](https://readr.tidyverse.org/) and data import cheatsheet
 
 ## Scraping Data
+
+## Creating nice tables  
+
+For this part, you should download the files that go with the demo video by Rich Iannone and follow along! I've added a few things that he didn't cover in the video and make a couple small changes since a few of the functions have changes since he made the video.
+
+### Demo video (it's not me!)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/h1KAjSfSbmk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+```{r, echo=FALSE}
+download_file(
+  path = "gt_demo.Rmd",
+  button_label = "Download gt demo file (without code)",
+  button_type = "warning",
+  has_icon = TRUE,
+  icon = "fa fa-save",
+  self_contained = FALSE
+)
+```
+
+```{r, echo=FALSE}
+download_file(
+  path = "gt_demo.Rmd",
+  button_label = "Download gt demo file (with code)",
+  button_type = "info",
+  has_icon = TRUE,
+  icon = "fa fa-save",
+  self_contained = FALSE
+)
+```
+
+### Resources
+
+* [Rich Iannone's](https://www.youtube.com/watch?v=h1KAjSfSbmk) demo  
+* [Guidelines for Better Tables in R](https://themockup.blog/posts/2020-09-04-10-table-rules-in-r/) by Thomas Mock  
+* [gt documentation](https://gt.rstudio.com/reference/index.html) - a lot of detail but great place to go to see all the functions available
+
+### Your turn!
+
+
+
+## Combining graphs with `patchwork`
+
+I am only going to show you the basics of `patchwork`. I encourage you to look at more details in the resources I listed below.
+
+### Resources
+
+* [GitHub page](https://github.com/thomasp85/patchwork): scroll to the bottom to see more detailed links in the "Learn more" section  
+
+* [Excellent example](https://www.littlemissdata.com/blog/patchwork) by Laura Ellis, aka \@LittleMissData
+
+### Your turn!
+
 
 
