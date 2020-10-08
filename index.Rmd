@@ -1,0 +1,91 @@
+---
+title: "Importing and Scraping Data ...   \n and random tidying tools"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    df_print: paged
+    code_download: true
+---
+
+## Setup
+
+Welcome to another tutorial for this class, COMP/STAT 112: *Introduction to Data Science*! It will be similar to the others, including demo videos and files embedded in this document and practice problems with hints or solutions at the end. There are some new libraries, so be sure to install those first.
+
+As most of our files do, we start this one with three R code chunks: 1. options, 2. libraries and settings, 3. data. 
+
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE, 
+                      message = FALSE, 
+                      warning = FALSE)
+```
+
+```{r libraries}
+library(tidyverse)     # for data cleaning and plotting
+library(googlesheets4) # for reading googlesheet data
+library(lubridate)     # for date manipulation
+library(openintro)     # for the abbr2state() function
+library(palmerpenguins)# for Palmer penguin data
+library(maps)          # for map data
+library(ggmap)         # for mapping points on maps
+library(gplots)        # for col2hex() function
+library(RColorBrewer)  # for color palettes
+library(sf)            # for working with spatial data
+library(leaflet)       # for highly customizable mapping
+library(ggthemes)      # for more themes (including theme_map())
+library(plotly)        # for the ggplotly() - basic interactivity
+library(gganimate)     # for adding animation layers to ggplots
+library(gifski)        # for creating the gif (don't need to load this library every time,but need it installed)
+library(transformr)    # for "tweening" (gganimate)
+library(shiny)         # for creating interactive apps
+library(patchwork)     # for nicely combining ggplot2 graphs  
+library(gt)            # for creating nice tables
+library(knitr)         # for the kable() function for creating nice tables
+library(rvest)         # for scraping data
+library(robotstxt)     # for checking if you can scrape data
+gs4_deauth()           # To not have to authorize each time you knit.
+theme_set(theme_minimal())
+```
+
+```{r my_libraries, include=FALSE}
+# Lisa needs this, students don't
+library(downloadthis) # for including download buttons for files
+library(flair)        # for highlighting code
+library(xaringanExtra)# for small slides and other cool things
+```
+
+```{r data}
+# Lisa's garden data
+garden_harvest <- read_sheet("https://docs.google.com/spreadsheets/d/1DekSazCzKqPS2jnGhKue7tLxRU3GVL1oxi-4bEM5IWw/edit?usp=sharing") %>% 
+  mutate(date = ymd(date))
+```
+
+## Learning Goals
+
+After this tutorial, you should be able to do the following:
+
+* Import data into R that is stored in a common file type (.csv, .txt, excel, etc) or in a Google spreadsheet.  
+
+* Find resources to read in data that is in a format other than one of the more common formats.
+
+* Use `rvest()` functions to scrape data from a simple webpage and recognize when scraping the data will require more advanced tools.
+
+* Create nice tables with the `knitr` `kable()` functions and the `gt` functions. 
+
+* Use `patchwork` to display related plots together nicely.
+
+## Importing Data
+
+### Common Import functions
+
+### Using the Import Dataset Wizard
+
+### Resources
+
+* [R4DS](https://r4ds.had.co.nz/data-import.html)
+
+* [readr documentation](https://readr.tidyverse.org/) and data import cheatsheet
+
+## Scraping Data
+
+
