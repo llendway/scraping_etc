@@ -255,6 +255,6 @@ Combine at least two garden graphs using the `patchwork` operators and functions
 
 #### Exercise 2
 
-Combine at least two graphs from using project data.
+Combine at least two graphs using your project data.
 
 
