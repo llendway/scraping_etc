@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 ```{r libraries}
 library(tidyverse)     # for data cleaning and plotting
-library(googlesheets4) # for reading googlesheet data
+library(gardenR)       # for Lisa's garden data
 library(lubridate)     # for date manipulation
 library(openintro)     # for the abbr2state() function
 library(palmerpenguins)# for Palmer penguin data
@@ -42,7 +42,6 @@ library(patchwork)     # for nicely combining ggplot2 graphs
 library(gt)            # for creating nice tables
 library(rvest)         # for scraping data
 library(robotstxt)     # for checking if you can scrape data
-gs4_deauth()           # To not have to authorize each time you knit.
 theme_set(theme_minimal())
 ```
 
@@ -55,8 +54,7 @@ library(xaringanExtra)# for small slides and other cool things
 
 ```{r data}
 # Lisa's garden data
-garden_harvest <- read_sheet("https://docs.google.com/spreadsheets/d/1DekSazCzKqPS2jnGhKue7tLxRU3GVL1oxi-4bEM5IWw/edit?usp=sharing") %>% 
-  mutate(date = ymd(date))
+data("garden_harvest")
 ```
 
 ## Learning Goals

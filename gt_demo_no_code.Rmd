@@ -16,7 +16,6 @@ knitr::opts_chunk$set(echo = TRUE,
 
 ```{r libraries}
 library(tidyverse)     # for data cleaning and plotting
-library(googlesheets4) # for reading googlesheet data
 library(lubridate)     # for date manipulation
 library(openintro)     # for the abbr2state() function
 library(palmerpenguins)# for Palmer penguin data
@@ -39,7 +38,6 @@ library(paletteer)     # for color pallettes
 library(knitr)         # for the kable() function for creating nice tables
 library(rvest)         # for scraping data
 library(robotstxt)     # for checking if you can scrape data
-gs4_deauth()           # To not have to authorize each time you knit.
 theme_set(theme_minimal())
 ```
 
