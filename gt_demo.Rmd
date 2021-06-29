@@ -138,7 +138,7 @@ tab_5 <-
 tab_5
 ```
 
-Add footnotes to some of the `currency` values. Many functions, like `cells_data()`, to help find the right cells. They all start with `cells_`.
+Add footnotes to some of the `currency` values. Many functions, like `cells_data()` (in newer versions of R, this is now called `cells_body()`), to help find the right cells. They all start with `cells_`.
 
 ```{r}
 tab_6 <-
