@@ -53,7 +53,7 @@ theme_set(theme_minimal())
 # Lisa needs this, students don't
 library(downloadthis) # for including download buttons for files
 library(flair)        # for highlighting code
-library(xaringanExtra)# for small slides and other cool things
+#library(xaringanExtra)# for small slides and other cool things
 ```
 
 ```{r data}
@@ -317,14 +317,99 @@ read_html("https://freedomhouse.org/countries/freedom-world/scores") %>%
 
 ![](../../images/rvest_selector_freedom.png)
 
+**What else might we want to do to make this table look better and be more user friendly?** (See hints for previous table.)
 
 ### Scraping data from Whole Foods website
 
+Next, we'll try something a bit more challenging - scraping some data from the [Whole Foods website](https://www.wholefoodsmarket.com/products/produce), specifically produce. First, let's be legal:
 
+```{r}
+paths_allowed("https://www.wholefoodsmarket.com/products/produce")
+```
+
+Next, let's read in the webpage:
+
+```{r}
+whole_foods <- read_html("https://www.wholefoodsmarket.com/products/produce")
+```
+
+Go take a look at the website. It should look something like the image below (unless it's changed - I hope not!).
+
+![](../../images/rvest_whole_foods.png)
+
+This time, with a little bit of work, I was able to get the right selector with the SelectorGadget. 
+
+```{r}
+whole_foods %>% 
+  html_elements("#category-page-body .w-cms--font-body__sans-bold") %>% 
+  html_text2()
+```
+
+Notice the first 4 items are not supposed to be there ... I couldn't figure out how to get rid of them nicely. 
+
+Sometimes, we might want to pull some information from the link to each item on the page. The code below will create each produce item's website. The `html_elements()` argument came from using the Developer tools inspector, but I needed to use the name near the image, not the copied one (see image below).
+
+```{r}
+produce_websites <- 
+  whole_foods %>% 
+  # the selector we need
+  html_elements("a.w-pie--product-tile__link") %>% 
+  # only want the href attribute
+  html_attr("href") %>% 
+  # concatenate the beginning of the website to each href - the . lets it know
+  # to use the data from the previous step there.
+  str_c("https://www.wholefoodsmarket.com", ., sep = "")
+
+head(produce_websites)
+```
+
+![](../../images/rvest_website_selector.png)
+
+One thing we could do on this page is grab the image of the produce. This is done below for the apple image. 
+
+```{r}
+image_example <-
+  # First website
+  produce_websites[1] %>%
+  # Read that site
+  read_html() %>% 
+  # Copy and paste the selector from developer tools inspector
+  html_elements("#main-content > div > div.w-pie--pdp-image > div > div.w-pie--product-detail-carousel > div.w-pie--pdc__large > div > div > div > div.slick-slide.slick-active.slick-current > div > div > div > div > figure > img") %>% 
+  # Only keep the src attribute - link to image
+  html_attr("src")
+
+# Download the image
+download.file(image_example,
+              destfile = "apple.png")
+```
+
+Now I can read in the image using `![]()` notation where the location of the file is in the parentheses.
+
+![](apple.png)
+
+In the code, we can change the website to the 3rd produce item (avocado), keeping the rest of the code the same, and we'll save the avocado image. We could even use some functions from the `purrr` library to help us do this for all the produce! 
+
+```{r}
+image_example2 <-
+  # First website
+  produce_websites[3] %>%
+  # Read that site
+  read_html() %>% 
+  # Copy and paste the selector from developer tools inspector
+  html_elements("#main-content > div > div.w-pie--pdp-image > div > div.w-pie--product-detail-carousel > div.w-pie--pdc__large > div > div > div > div.slick-slide.slick-active.slick-current > div > div > div > div > figure > img") %>% 
+  # Only keep the src attribute - link to image
+  html_attr("src")
+
+# Download the image
+download.file(image_example2,
+              destfile = "avocado.png")
+```
+
+![](avocado.png)
 
 ### Another example ... bikes! (NO LONGER WORKS - sad times!)
 
-This is an old (summer 2021) example that no longer works because Salsa changed their website. Some of the `rvest` code is also old. I (Lisa) was pretty sad because I spent a lot of time on this example, so I'm keeping it here, just to remember it. Also, I got some great ideas from folks on Twitter. Evan Rushton provided a [new solution](https://github.com/evanrushton/utils/blob/main/chromedriver-example.R) and `@` let me know that much of the code still works if you use an archived [website](https://web.archive.org/web/20210506121757/https://salsacycles.com/bikes). 
+This is an old (summer 2021) example that no longer works because Salsa changed their website. Some of the `rvest` code is also old. I (Lisa) was pretty sad because I spent a lot of time on this example, so I'm keeping it here, just to remember it. Also, I got some great ideas from folks on Twitter. Evan Rushton provided a [new solution](https://github.com/evanrushton/utils/blob/main/chromedriver-example.R) and `@Datenshatz` let me know that much of the code still works if you use an archived [website](https://web.archive.org/web/20210506121757/https://salsacycles.com/bikes). 
 
 This example aims to show a couple techniques not shown in the previous example. We will be examining [Salsa brand bikes](https://salsacycles.com/bikes). 
 
@@ -488,7 +573,7 @@ For this part, you should download the files that go with the demo video by Rich
 
 ### Demo video (it's not me!)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/h1KAjSfSbmk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/h1KAjSfSbmk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-external="1"></iframe>
 
 ```{r, echo=FALSE}
 download_file(
