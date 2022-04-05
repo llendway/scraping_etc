@@ -108,7 +108,7 @@ garden_harvest %>%
 
 When reading in data from a file I created, I will often use the Import Wizard to help me write the code. DO NOT use it to import the data as you will need the code to read in the data in order to knit your document. Watch the quick video below of how I use it. 
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/GtCsjtZBNp4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/GtCsjtZBNp4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-external="1"></iframe>
 
 [Voicethread: Using the Import Dataset Wizard](https://voicethread.com/share/15717600/)
 
